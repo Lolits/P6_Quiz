@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const quizController = require('../controllers/quiz');
-const randomController = require('../controllers/random');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -30,7 +29,7 @@ router.get('/quizzes/:quizId(\\d+)/play', quizController.play);
 router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 
 // Routes for random
-router.get("/quizzes/randomplay", randomController.randomplay);
-router.get("/quizzes/randomcheck/:quizId?answer=respuesta", randomController.randomcheck);
+router.get("/quizzes/randomplay", quizController.randomplay);
+router.get("/quizzes/randomcheck/:quizId(\\d+)", quizController.randomcheck);
 
 module.exports = router;
