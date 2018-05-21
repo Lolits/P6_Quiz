@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Quiz</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
-    <link rel='stylesheet'
-          type='text/css'
-          media='only screen and (min-width: 800px) and (min-device-width: 600px)'
-          href='/stylesheets/wide.css'/>
-    <link rel='stylesheet'
-          type='text/css'
-          media='only screen and (max-width: 480px)'
-          href='/stylesheets/smartphone.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' type='text/css' media='only screen and (min-width: 800px) and (min-device-width: 600px)' href='/stylesheets/wide.css'
+    />
+    <link rel='stylesheet' type='text/css' media='only screen and (max-width: 480px)' href='/stylesheets/smartphone.css' />
 </head>
+
 <body>
 <div id="page">
     <header class="main" id="mainHeader">
@@ -33,6 +30,7 @@
 
     <nav class="main" id="mainNav" role="navigation">
         <a href="/">Home</a>
+        <a href="/quizzes/randomplay">Play</a>
         <a href="/quizzes">Quizzes</a>
         <% if (session.user) { %>
             <a href="/users/<%= session.user.id %>/quizzes">My Quizzes</a>
@@ -43,40 +41,46 @@
         <% } %>
     </nav>
 
-    <section class="main" id="mainSection">
+        <section class="main" id="mainSection">
 
-        <% if (messages.info) { %>
-        <article id='flashinfo'>
-            <h3>Information of interest:</h3>
-            <ul>
-                <% for (var i in messages.info) { %>
-                <li> <%= messages.info[i] %> </li>
+            <% if (messages.info) { %>
+                <article id='flashinfo'>
+                    <h3>Information of interest:</h3>
+                    <ul>
+                        <% for (var i in messages.info) { %>
+                            <li>
+                                <%= messages.info[i] %>
+                            </li>
+                            <% } %>
+                    </ul>
+                </article>
                 <% } %>
-            </ul>
-        </article>
-        <% } %>
 
-        <% if (messages.success) { %>
-        <article id='flashsuccess'>
-            <h3>Tasks completed successfully:</h3>
-            <ul>
-                <% for (var i in messages.success) { %>
-                <li> <%= messages.success[i] %> </li>
-                <% } %>
-            </ul>
-        </article>
-        <% } %>
+                    <% if (messages.success) { %>
+                        <article id='flashsuccess'>
+                            <h3>Tasks completed successfully:</h3>
+                            <ul>
+                                <% for (var i in messages.success) { %>
+                                    <li>
+                                        <%= messages.success[i] %>
+                                    </li>
+                                    <% } %>
+                            </ul>
+                        </article>
+                        <% } %>
 
-        <% if (messages.error) { %>
-        <article id='flasherror'>
-            <h3>Errors:</h3>
-            <ul>
-                <% for (var i in messages.error) { %>
-                <li> <%= messages.error[i] %> </li>
-                <% } %>
-            </ul>
-        </article>
-        <% } %>
+                            <% if (messages.error) { %>
+                                <article id='flasherror'>
+                                    <h3>Errors:</h3>
+                                    <ul>
+                                        <% for (var i in messages.error) { %>
+                                            <li>
+                                                <%= messages.error[i] %>
+                                            </li>
+                                            <% } %>
+                                    </ul>
+                                </article>
+                                <% } %>
 
         <%- body %>
 
@@ -85,10 +89,11 @@
         <% } %>
     </section>
 
-    <footer class="main" id="mainFooter">
-        <a href="http://en.wikipedia.org/wiki/Quiz">
-            What is a Quiz?</a>
-    </footer>
-</div>
+        <footer class="main" id="mainFooter">
+            <a href="http://en.wikipedia.org/wiki/Quiz">
+                What is a Quiz?</a>
+        </footer>
+    </div>
 </body>
+
 </html>

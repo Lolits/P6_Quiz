@@ -103,9 +103,13 @@ exports.index = (req, res, next) => {
 // GET /quizzes/:quizId
 exports.show = (req, res, next) => {
 
-    const {quiz} = req;
+    const {
+        quiz
+    } = req;
 
-    res.render('quizzes/show', {quiz});
+    res.render('quizzes/show', {
+        quiz
+    });
 };
 
 
@@ -113,17 +117,22 @@ exports.show = (req, res, next) => {
 exports.new = (req, res, next) => {
 
     const quiz = {
-        question: "", 
+        question: "",
         answer: ""
     };
 
-    res.render('quizzes/new', {quiz});
+    res.render('quizzes/new', {
+        quiz
+    });
 };
 
 // POST /quizzes/create
 exports.create = (req, res, next) => {
 
-    const {question, answer} = req.body;
+    const {
+        question,
+        answer
+    } = req.body;
 
     const authorId = req.session.user && req.session.user.id || 0;
 
@@ -154,34 +163,47 @@ exports.create = (req, res, next) => {
 // GET /quizzes/:quizId/edit
 exports.edit = (req, res, next) => {
 
-    const {quiz} = req;
+    const {
+        quiz
+    } = req;
 
-    res.render('quizzes/edit', {quiz});
+    res.render('quizzes/edit', {
+        quiz
+    });
 };
 
 
 // PUT /quizzes/:quizId
 exports.update = (req, res, next) => {
 
-    const {quiz, body} = req;
+    const {
+        quiz,
+        body
+    } = req;
 
     quiz.question = body.question;
     quiz.answer = body.answer;
 
-    quiz.save({fields: ["question", "answer"]})
-    .then(quiz => {
-        req.flash('success', 'Quiz edited successfully.');
-        res.redirect('/quizzes/' + quiz.id);
-    })
-    .catch(Sequelize.ValidationError, error => {
-        req.flash('error', 'There are errors in the form:');
-        error.errors.forEach(({message}) => req.flash('error', message));
-        res.render('quizzes/edit', {quiz});
-    })
-    .catch(error => {
-        req.flash('error', 'Error editing the Quiz: ' + error.message);
-        next(error);
-    });
+    quiz.save({
+            fields: ["question", "answer"]
+        })
+        .then(quiz => {
+            req.flash('success', 'Quiz edited successfully.');
+            res.redirect('/quizzes/' + quiz.id);
+        })
+        .catch(Sequelize.ValidationError, error => {
+            req.flash('error', 'There are errors in the form:');
+            error.errors.forEach(({
+                message
+            }) => req.flash('error', message));
+            res.render('quizzes/edit', {
+                quiz
+            });
+        })
+        .catch(error => {
+            req.flash('error', 'Error editing the Quiz: ' + error.message);
+            next(error);
+        });
 };
 
 
@@ -203,7 +225,10 @@ exports.destroy = (req, res, next) => {
 // GET /quizzes/:quizId/play
 exports.play = (req, res, next) => {
 
-    const {quiz, query} = req;
+    const {
+        quiz,
+        query
+    } = req;
 
     const answer = query.answer || '';
 
@@ -217,7 +242,10 @@ exports.play = (req, res, next) => {
 // GET /quizzes/:quizId/check
 exports.check = (req, res, next) => {
 
-    const {quiz, query} = req;
+    const {
+        quiz,
+        query
+    } = req;
 
     const answer = query.answer || "";
     const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
@@ -227,4 +255,70 @@ exports.check = (req, res, next) => {
         result,
         answer
     });
+};
+
+// GET /quizzes/randomplay
+exports.randomplay = (req, res, next) => {
+
+    if (req.session.toBeResolved === undefined) {
+        req.session.score = 0;
+        models.quiz.findAll()
+            .then(quizzes => {
+                req.session.toBeResolved = quizzes;
+                const azar = Math.floor(Math.random() * req.session.toBeResolved.length);
+                const quiz = req.session.toBeResolved[azar];
+                req.session.toBeResolved.splice(azar, 1);
+                const score = req.session.score;
+                res.render('random_play', {
+                    quiz: quiz,
+                    score: score,
+                })
+            }).catch(error => next(error));
+    } else {
+        const azar = Math.floor(Math.random() * req.session.toBeResolved.length);
+        const quiz = req.session.toBeResolved[azar];
+        req.session.toBeResolved.splice(azar, 1);
+        const score = req.session.score;
+        res.render("random_play", {
+            quiz: quiz,
+            score: score,
+        });
+    };
+};
+
+
+// GET /quizzes/randomcheck
+exports.randomcheck = (req, res, next) => {
+
+    const {
+        quiz,
+        query
+    } = req;
+    const answer = query.answer || "";
+    const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
+
+    if (result) {
+        req.session.score++;
+        const score = req.session.score;
+        if (req.session.toBeResolved.length === 0) {
+            req.session.toBeResolved = undefined;
+            res.render("random_nomore", {
+                score: score
+            });
+        } else {
+            res.render("random_result", {
+                answer: answer,
+                result: result,
+                score: score
+            });
+        }
+    } else {
+        req.session.toBeResolved = undefined;
+        const score = req.session.score;
+        res.render("random_result", {
+            answer: answer,
+            result: result,
+            score: score
+        });
+    }
 };
