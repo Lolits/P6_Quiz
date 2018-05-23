@@ -6,12 +6,14 @@
         <% var accepted = tip.accepted; %>
         <% var isAdmin = session.user && session.user.isAdmin; %>
         <% var isQuizAuthor = session.user && quizAuthorId && quizAuthorId === session.user.id; %>
-        <% var isTipAuthor = session.user && tipAuthorId && tipAuthorId === session.user.id; %>
+        <% var isTipAuthor = session.user && tip.Author.username && tip.Author.username === session.user.id; %>
 
         <% if (accepted || isAdmin || isQuizAuthor || isTipAuthor) { %>
 
             <li>
                 <%= tip.text %>
+                Pista creada por:
+                <%= tip.Author.username %>
 
                 <% if (!accepted && (isAdmin || isQuizAuthor || isTipAuthor)) { %>
 
