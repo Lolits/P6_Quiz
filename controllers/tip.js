@@ -44,6 +44,10 @@ exports.create = (req, res, next) => {
         req.flash('error', 'Error creating the new tip: ' + error.message);
         next(error);
     });
+
+    if (req.session.user === undefined){
+        res.redirect("./login");
+    }
 };
 
 
