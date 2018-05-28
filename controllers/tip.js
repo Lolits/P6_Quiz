@@ -130,7 +130,7 @@ exports.update = (req, res, next) => {
 exports.adminOrAuthorRequired = (req, res, next) => {
 
     const isAdmin  = !!req.session.user.isAdmin;
-    const isAuthor = req.tip.author.username === req.session.user.id;
+    const isAuthor = req.tip.authorId === req.session.user.id;
 
     if (isAdmin || isAuthor) {
         next();
